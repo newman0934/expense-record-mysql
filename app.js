@@ -72,26 +72,6 @@ app.use((req, res, next) => {
   next();
 })
 
-
-//require mongoose
-const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/record", {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
-});
-
-//connect mongodb
-const db = mongoose.connection;
-
-db.on("error", () => {
-  console.log("mongodb error");
-});
-
-db.once("open", () => {
-  console.log("mongodb connected");
-});
-
 const Record = require("./models/record");
 
 app.use("/", require("./routes/home"));

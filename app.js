@@ -9,6 +9,11 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config()
 }
 
+const db = require("./models")
+const User = db.User
+const Record = db.Record
+
+
 //require express-handlebars
 const exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({
@@ -71,8 +76,6 @@ app.use((req, res, next) => {
   res.locals.warning_msg = req.flash("warning_msg")
   next();
 })
-
-const Record = require("./models/record");
 
 app.use("/", require("./routes/home"));
 app.use("/records", require("./routes/record"));

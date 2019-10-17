@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const db = require("../models")
+const User = db.User
 
 router.get("/login", (req, res) => {
   let errors = [];
@@ -63,7 +64,7 @@ router.post("/register", (req, res) => {
     });
   } else {
     User.findOne({
-      email: email
+      where: {email: email}
     }).then(user => {
       if (user) {
         console.log("user already exists");

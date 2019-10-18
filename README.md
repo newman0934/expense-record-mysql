@@ -11,54 +11,29 @@
 - Facebook登入
 ## Quick view
 
-![index page](https://raw.githubusercontent.com/newman0934/expense-record-mongodb/master/public/img/index.png)
-![edit page](https://raw.githubusercontent.com/newman0934/expense-record-mongodb/master/public/img/edit.png)
-![login page](https://raw.githubusercontent.com/newman0934/expense-record-mongodb/master/public/img/login.png)
-![register page](https://raw.githubusercontent.com/newman0934/expense-record-mongodb/master/public/img/register.png)
-## Environment set up
-- bcryptjs: ^2.4.3,
-- body-parser: ^1.19.0,
-- connect-flash: ^0.1.1,
-- dotenv: ^8.1.0,
-- express: ^4.17.1,
-- express-handlebars: ^3.1.0,
-- express-session: ^1.16.2,
-- method-override: ^3.0.0,
-- mongoose: ^5.6.13,
-- passport: ^0.4.0,
-- passport-facebook: ^3.0.0,
-- passport-local: ^1.0.0,
-- passport-google-oauth20: ^2.0.0
+![index page](https://raw.githubusercontent.com/newman0934/expense-record-mysql/master/public/img/index.png)
+![edit page](https://raw.githubusercontent.com/newman0934/expense-record-mysql/master/public/img/edit.png)
+![login page](https://raw.githubusercontent.com/newman0934/expense-record-mysql/master/public/img/login.png)
+![register page](https://raw.githubusercontent.com/newman0934/expense-record-mysql/master/public/img/register.png)
+
 
 ### Installation
-- Download ZIP
-- 解壓縮ZIP檔案
-- 下載nvm並安裝
-- 打開cmd
-- cd到檔案位址
-- 在cmd輸入nvm install 10.15.0
-- 在cmd輸入nvm use 10.15.0
-- 安裝mongodb
-- 安裝mongoose
-- 在mongoose建立一個record資料庫
-- cd到seeds資料夾
-- 輸入node seeder.js
-- cd到expense-record-mongodb位址
+- 進入cmd
+- 輸入git clone https://github.com/newman0934/expense-record-mysql.git
+- cd到expense-record-mysql資料夾
+- 在cmd輸入npm install安裝套件
+- 進入config/config.json更改password為你的資料庫的password、database為expense_record_mysql
+- 建立資料庫
+```js
+drop database if exists expense_record_mysql;
+create database expense_record_mysql;
+use expense_record_mysql;
+```
 - 在根目錄新增一個.env檔案並把以下code輸入到裡面
 ```js
 FACEBOOK_ID=你的facebook_id
 FACEBOOK_SECRET=你的facebook密鑰
 FACEBOOK_CALLBACK=http://localhost:3000/auth/facebook/callback
-
-GOOGLE_ID=你的google id
-GOOGLE_SECRET=你的google 密碼
-GOOGLE_CALLBACK=http://localhost:3000/auth/google/callback
 ```
 - 輸入node app.js
 - 在瀏覽器上進入http://localhost:3000
-
-- 測試帳號
-```js
-Email=caesar@gmail.com
-password=111
-```

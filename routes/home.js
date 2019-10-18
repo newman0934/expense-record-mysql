@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const Record = require("../models/record");
 const categoryList = require("../models/recordList").results;
-
+const Sequelize = require("sequelize");
+const db = require("../models");
+const User = db.User;
+const Record = db.Record;
+const Op = Sequelize.Op;
 const { authenticated } = require("../config/auth");
 
 router.get("/", authenticated, (req, res) => {
@@ -14,138 +17,58 @@ router.get("/", authenticated, (req, res) => {
       ? ""
       : categoryList[filterCategory]["chineseName"];
 
-  // console.log(Record)
-  // let sql = ''
-
-  // if (filterMonth === '' && filterCategory === '') {
-  //   sql = [{
-  //     "$project": {
-  //       "name": 1,
-  //       "category": 1,
-  //       "amount": 1,
-  //       "date": 1,
-  //       "merchant": 1,
-  //       "userId": 1
-  //     }
-  //   }, {
-  //     "$match": {
-  //       userId: req.user._id
-  //     }
-  //   }]
-
-  // } else if (filterMonth === '') {
-  //   sql = [{
-  //     "$project": {
-  //       "name": 1,
-  //       "category": 1,
-  //       "amount": 1,
-  //       "date": 1,
-  //       "merchant": 1,
-  //       "userId": 1
-  //     }
-  //   }, {
-  //     "$match": {
-  //       userId: req.user._id,
-  //       category: filterCategory
-  //     }
-  //   }]
-
-  // } else if (filterCategory === '') {
-  //   sql = [{
-  //     "$project": {
-  //       "m": {
-  //         "$month": "$date"
-  //       },
-  //       "name": 1,
-  //       "category": 1,
-  //       "amount": 1,
-  //       "date": 1,
-  //       "merchant": 1,
-  //       "userId": 1
-  //     }
-  //   }, {
-  //     "$match": {
-  //       "m": Number(filterMonth),
-  //       userId: req.user._id
-  //     }
-  //   }]
-
-  // } else {
-  //   sql = [{
-  //     "$project": {
-  //       "m": {
-  //         "$month": "$date"
-  //       },
-  //       "name": 1,
-  //       "category": 1,
-  //       "amount": 1,
-  //       "date": 1,
-  //       "merchant": 1,
-  //       "userId": 1
-  //     }
-  //   }, {
-  //     "$match": {
-  //       "m": Number(filterMonth),
-  //       userId: req.user._id,
-  //       category: filterCategory
-  //     }
-  //   }]
-  // }
-
-  // Record.aggregate(sql).exec((err, records) => {
-  //   if (err) return console.error(err);
-  //   let totalAmount = 0;
-  //   records.map(record => {
-  //     totalAmount += record.amount;
-  //   });
-  //   res.render("index", {
-  //     records,
-  //     totalAmount,
-  //     filterCategory,
-  //     filterMonth,
-  //     categoryChinese
-  //   });
-  // });
-
-  let userId = req.user._id;
-  let querySelect = { userId };
+  let userId = req.user.id;
+  let querySelect = { where: { userId } };
 
   if (filterMonth === "" && filterCategory !== "") {
-    querySelect = { userId, category: filterCategory };
+    querySelect = {
+      where: {
+        userId,
+        [Op.like]: filterCategory
+      }
+    };
   } else if (filterCategory === "" && filterMonth !== "") {
     querySelect = {
-      userId,
-      date: {
-        $gte: new Date(`2019-${filterMonth}-01`),
-        $lte: new Date(`2019-${filterMonth}-31`)
+      where: {
+        userId,
+        date: {
+          [Op.gte]: new Date(`2019-${filterMonth}-01`),
+          [Op.lte]: new Date(`2019-${filterMonth}-31`)
+        }
       }
     };
   } else if (filterCategory !== "" && filterMonth !== "") {
     querySelect = {
-      userId,
-      date: {
-        $gte: new Date(`2019-${filterMonth}-01`),
-        $lte: new Date(`2019-${filterMonth}-31`)
-      },
-      category: filterCategory
+      where: {
+        userId,
+        [Op.like]: filterCategory,
+        date: {
+          [Op.gte]: new Date(`2019-${filterMonth}-01`),
+          [Op.lte]: new Date(`2019-${filterMonth}-31`)
+        }
+      }
     };
   }
 
-  Record.find(querySelect, (err, records) => {
-    if (err) return console.error(err);
+  User.findByPk(req.user.id)
+    .then(user => {
+      if (!user) throw new Error("user not found");
+      return Record.findAll(querySelect);
+    })
+    .then(records => {
+      let totalAmount = 0;
+      records.map(record => {
+        totalAmount += record.amount;
+      });
 
-    let totalAmount = 0;
-    records.map(record => {
-      totalAmount += record.amount;
+      return res.render("index", {
+        records,
+        totalAmount,
+        filterCategory,
+        filterMonth,
+        categoryChinese
+      });
     });
-    res.render("index", {
-      records,
-      totalAmount,
-      filterCategory,
-      filterMonth,
-      categoryChinese
-    });
-  });
 });
 
 module.exports = router;

@@ -1,15 +1,14 @@
 # record expense
-不讓媽媽看到的爸爸支出記帳表
+不讓媽媽看到的爸爸支出記帳表(mysql版)
 
 ## Features
 - 列出所有的支出
 - 篩選支出列別
 - 修改支出
 - 新增支出
-- 刪除刪除
+- 刪除支出
 - 使用者登入、登出、註冊
 - Facebook登入
-- google登入
 ## Quick view
 
 ![index page](https://raw.githubusercontent.com/newman0934/expense-record-mongodb/master/public/img/index.png)

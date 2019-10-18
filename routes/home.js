@@ -24,7 +24,7 @@ router.get("/", authenticated, (req, res) => {
     querySelect = {
       where: {
         userId,
-        [Op.like]: filterCategory
+        category: filterCategory
       }
     };
   } else if (filterCategory === "" && filterMonth !== "") {
@@ -41,7 +41,7 @@ router.get("/", authenticated, (req, res) => {
     querySelect = {
       where: {
         userId,
-        [Op.like]: filterCategory,
+        category: filterCategory,
         date: {
           [Op.gte]: new Date(`2019-${filterMonth}-01`),
           [Op.lte]: new Date(`2019-${filterMonth}-31`)

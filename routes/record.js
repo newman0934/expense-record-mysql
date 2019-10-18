@@ -69,7 +69,7 @@ router.get("/:id/edit", authenticated, (req, res) => {
 });
 // 修改 record
 router.put("/:id", authenticated, (req, res) => {
-  Todo.findOne({
+  Record.findOne({
     where: {
       id: req.params.id,
       UserId: req.user.id,
@@ -82,7 +82,7 @@ router.put("/:id", authenticated, (req, res) => {
     records.category = req.body.category
     records.amount = req.body.amount
 
-    return todo.save()
+    return records.save()
   })
   .then((records) => { return res.redirect(`/`)  })
   .catch((error) => { return res.status(422).json(error) })
